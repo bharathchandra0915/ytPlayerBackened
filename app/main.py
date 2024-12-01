@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from .utils import fetch_metadata, download_and_convert_to_mp3
+from .utils import fetch_metadata, download_and_convert_to_mp3_stream
 
 app = FastAPI()
 
@@ -22,7 +23,9 @@ def get_metadata(video: VideoURL):
 @app.post("/download/")
 def download_mp3(video: VideoURL):
     try:
-        file_path = download_and_convert_to_mp3(video.url)
-        return {"message": "Download complete", "file_path": file_path}
+        mp3_data, filename = download_and_convert_to_mp3_stream(video.url)
+        return StreamingResponse(mp3_data, media_type="audio/mpeg", headers={
+            "Content-Disposition": f"attachment; filename={filename}"
+        })
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
