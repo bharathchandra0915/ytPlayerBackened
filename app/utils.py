@@ -3,7 +3,7 @@ import os
 
 def fetch_metadata(url):
     ydl_opts = {"quiet": True,
-                'cookies': 'cookies.json'
+                'cookiefile': 'cookies.json'
                 }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
@@ -26,7 +26,7 @@ def download_and_convert_to_mp3(url, output_folder="downloads"):
             "preferredcodec": "mp3",
             "preferredquality": "192",
         }],
-        'cookies': 'cookies.json'
+        'cookiefile': 'cookies.json'
 
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
